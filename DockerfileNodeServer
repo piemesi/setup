@@ -1,0 +1,13 @@
+FROM node
+#EXPOSE 3006
+#COPY . /app
+WORKDIR /app
+
+RUN chmod -R 777 /app/
+RUN npm install -g webpack-dev-server webpack@^2 json-server 
+RUN cd /app && npm install
+RUN chmod -Rf 777 *
+ 
+CMD ["npm", "run", "offers_server"]
+#["node", "server/app.js"]
+

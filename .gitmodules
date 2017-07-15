@@ -1,0 +1,6 @@
+[submodule "laravel/php/src"]
+	path = laravel/php/src
+	url = https://github.com/piemesi/botlaravel
+[submodule "front/nginx/src"]
+	path = front/nginx/src
+	url = https://github.com/piemesi/botfront

@@ -1,0 +1,25 @@
+version: "3.1"
+services:
+  redis:
+    container_name: 'redis.lksso.sochisirius.wrk'
+    build: ./redis
+    volumes:
+      - "${REDIS_DATA}:/data"
+    ports:
+      - "${REDIS_PORT}"
+  php:
+    container_name: 'php.lksso.sochisirius.wrk'
+    build: ./php
+    volumes:
+      - "${LK_SSO_SRC}:/var/www/html"
+    links:
+      - redis
+    stdin_open: true
+    tty: true
+  nginx:
+    container_name: 'nginx.lksso.sochisirius.wrk'
+    build: ./nginx
+    ports:
+      - "${LK_SSO_PORT}"
+    links:
+      - php

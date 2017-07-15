@@ -1,0 +1,20 @@
+FROM  malgrat/node6
+ 
+#docker pull jubianchi/docker-node-4 #
+#EXPOSE 3008
+#COPY /var/www/front/bot.manager /app
+WORKDIR /app/client
+
+
+RUN chmod -R 777 /app
+#RUN npm i -g npm
+RUN npm install  -g webpack-dev-server webpack@^2   
+RUN chmod -R 777 /app
+#RUN npm rebuild node-sass --force
+#RUN npm install  
+
+
+#   CMD ["bash"]
+CMD ["npm", "run", "start"]
+#["node", "server/app.js"]
+

@@ -1,0 +1,134 @@
+version: "2.0"
+
+services:
+
+  laravel_nginx:
+    container_name: 'laravel.nginx'
+    build: ./laravel/nginx
+    ports:
+      - "${LARAVEL_BOTME_PORT}"
+    links:
+      - laravel_php
+    networks:
+      - main
+  laravel_php:
+      image: malgrat/phpfpm:rdkafka_composer_pinba_pdo
+      container_name: 'laravel.php'
+      build: ./laravel/php
+      extra_hosts:
+       - "localhost:172.17.0.1"
+      links:
+       - redis
+       - mysql
+       - rabbitmq
+       - memcached
+       - elasticsearch
+#      ports:
+#       - "9001:9000"
+#      volumes:
+#       - /var/www/walker:/var/www/walker
+#       - /var/www/telegram.bot:/var/www/telegram.bot
+      working_dir: /var/www/telegram.bot
+      networks:
+      - main
+  mysql:
+      #image: malgrat/mysql_percona:task
+      build: ./mysql
+      container_name: 'mysql'
+      environment:
+       MYSQL_ROOT_PASSWORD: 123456
+       MYSQL_USER: writer
+       MYSQL_PASSWORD: 123456
+       MYSQL_DATABASE: Task
+      extra_hosts:
+       - "dbhost:172.17.0.5"
+      ports:
+       - "${MYSQL_BOTME_PORT}"
+      volumes:
+       - /var/lib/mysql
+       - ./mysql/my.cnf:/etc/mysql/my.cnf
+      command:
+       - '--character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci'
+      networks:
+      - main
+  mongo:
+      container_name: 'mongo'
+      image: mongo
+      ports:
+       - "27017:27017"
+      networks:
+      - main
+
+  memcached:
+      container_name: 'memcached'
+      image: memcached
+      ports:
+       - "11211:11211"
+      networks:
+      - main
+
+  redis:
+      container_name: 'redis'
+      image: redis
+      #volumes:
+      #  - "${REDIS_DATA}:/data"
+      #ports:
+      #  - "${REDIS_PORT}"
+      #ports:
+      # - "6379:6379"
+      networks:
+      - main
+
+
+  elasticsearch:
+      container_name: 'elasticsearch'
+      image: elasticsearch
+      ports:
+       - "9200:9200"
+       - "9300:9300"
+      networks:
+      - main
+
+  rabbitmq:
+      container_name: 'rabbitmq'
+      image: rabbitmq:3.6.1-management
+      ports:
+       - "15672:15672"
+       - "5672:5672" 
+      networks:
+      - main
+  
+  front:
+      build: ./front/nginx
+#      build:
+#        context: .
+#        dockerfile: DockerfileFront
+      container_name: 'front'
+      ports:
+       - "3009:3009"
+       - "${FRONT_PORT}"
+      links:
+       - mongo
+      volumes :
+       - /var/www/front/bot.manager:/app
+      networks:
+      - main
+
+#  nodeserver:
+#      build:
+#        context: .
+#        dockerfile: DockerfileNodeServer
+#      container_name: nodeserver
+#      ports:
+#       - "3006:3006"
+#      volumes :
+#       - /home/malgrat/study/react-redux-bookstore:/app
+      
+
+
+networks:
+  main:
+    driver: bridge
+
+
+

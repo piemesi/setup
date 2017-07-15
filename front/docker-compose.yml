@@ -1,0 +1,9 @@
+version: "3.1"
+services:
+  nginx:
+    container_name: 'front.botme'
+    build: ./nginx
+    ports:
+      - "${FRONT_BOTME}"
+    volumes:
+      - "${FRONT_BOTME_SRC}:/var/www/html"

@@ -1,0 +1,137 @@
+version: "2.0"
+
+services:
+  nginx_tools:
+      image:  malgrat/nginx_base:tutumubuntu_phalcon  
+      container_name: nginx_tools
+      ports:
+      - "8888:80"
+      - "88:88"
+      - "443:443"
+      - "9000:9000"
+#      - "3006:3006"
+      links:
+      - phpfpm
+      - mysql:mysql
+      - mongo:mongo
+      - memcached:memcached
+      - redis:redis
+      - elasticsearch:elasticsearch
+      - rabbitmq:rabbitmq
+#      - nodeserver:nodeserver
+      volumes:
+      - ./nginx_tools/default:/etc/nginx/sites-available/default
+      - ./nginx_tools/default:/etc/nginx/sites-enabled/default
+      - ./nginx_tools/telegram.bot:/etc/nginx/sites-available/telegram.bot
+      - ./nginx_tools/telegram.bot:/etc/nginx/sites-enabled/telegram.bot
+      - /var/www/walker:/var/www/walker
+      - /var/www/telegram.bot:/var/www/telegram.bot
+      - ./logs/nginx-error.log:/var/log/nginx/error.log
+      - ./logs/nginx-access.log:/var/log/nginx/access.log
+      networks:
+      - main
+
+  phpfpm:
+      image: malgrat/phpfpm:rdkafka_composer_pinba_pdo
+      container_name: phpfpm
+      extra_hosts:
+       - "localhost:172.17.0.1"
+      ports:
+       - "9001:9000"
+      volumes:
+       - /var/www/walker:/var/www/walker
+       - /var/www/telegram.bot:/var/www/telegram.bot
+      working_dir: /var/www/telegram.bot
+      networks:
+      - main
+  mysql:
+      image: malgrat/mysql_percona:task
+      container_name: mysql
+      environment:
+       MYSQL_ROOT_PASSWORD: 123456
+       MYSQL_USER: writer
+       MYSQL_PASSWORD: 123456
+       MYSQL_DATABASE: Task
+      extra_hosts:
+       - "dbhost:172.17.0.5"
+      ports:
+       - "3307:3306"
+      volumes:
+       - /var/lib/mysql
+       - ./mysql/my.cnf:/etc/mysql/my.cnf
+      command:
+       - '--character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci'
+      networks:
+      - main
+  mongo:
+      container_name: mongo
+      image: mongo
+      ports:
+       - "27017:27017"
+      networks:
+      - main
+
+  memcached:
+      container_name: memcached
+      image: memcached
+      ports:
+       - "11211:11211"
+      networks:
+      - main
+
+  redis:
+      container_name: redis
+      image: redis
+      ports:
+       - "6379:6379"
+      networks:
+      - main
+
+  elasticsearch:
+      container_name: elasticsearch
+      image: elasticsearch
+      ports:
+       - "9200:9200"
+       - "9300:9300"
+      networks:
+      - main
+
+  rabbitmq:
+      container_name: rabbitmq
+      image: rabbitmq:3.6.1-management
+      ports:
+       - "15672:15672"
+       - "5672:5672" 
+      networks:
+      - main
+  
+  front:
+      build:
+        context: .
+        dockerfile: DockerfileFront
+      container_name: front
+      ports:
+       - "3009:3009"
+      volumes :
+       - /var/www/front/bot.manager:/app
+      networks:
+      - main
+
+#  nodeserver:
+#      build:
+#        context: .
+#        dockerfile: DockerfileNodeServer
+#      container_name: nodeserver
+#      ports:
+#       - "3006:3006"
+#      volumes :
+#       - /home/malgrat/study/react-redux-bookstore:/app
+      
+
+
+networks:
+  main:
+    driver: bridge
+
+
+
