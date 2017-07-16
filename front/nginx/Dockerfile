@@ -2,6 +2,8 @@
 FROM node:latest AS storefront
 COPY ./src /app
 WORKDIR /app/client
+RUN rm -rf build
+RUN rm -rf node_modules
 RUN npm i webpack@^2.2.0 -g
 RUN npm install
 RUN webpack -p
