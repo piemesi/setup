@@ -109,8 +109,8 @@ services:
        - "${FRONT_PORT}"
       links:
        - mongo
-      volumes :
-       - /var/www/front/bot.manager:/app
+#      volumes :
+#       - /var/www/front/bot.manager:/app
       networks:
       - main
 

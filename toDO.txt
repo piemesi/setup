@@ -1,0 +1,4 @@
+GRANT ALL PRIVILEGES ON Task . * TO 'writer'@'85.93.145.220';
+FLUSH PRIVILEGES;
+GRANT ALL PRIVILEGES ON * . * TO 'writer'@'%';
+
