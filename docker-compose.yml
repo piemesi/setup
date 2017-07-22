@@ -9,12 +9,22 @@ services:
       - "${LARAVEL_BOTME_PORT}"
     links:
       - laravel_php
+##lll
+    volumes:
+      - ./nginx_tools/default:/etc/nginx/sites-available/default
+      - ./nginx_tools/default:/etc/nginx/sites-enabled/default
+      - ./nginx_tools/telegram.bot:/etc/nginx/sites-available/telegram.bot
+      - ./nginx_tools/telegram.bot:/etc/nginx/sites-enabled/telegram.bot
+      - /var/www/telegram.bot:/var/www/html
+      - ./logs/nginx-error.log:/var/log/nginx/error.log
+      - ./logs/nginx-access.log:/var/log/nginx/access.log
+###lllll
     networks:
       - main
   laravel_php:
       image: malgrat/phpfpm:rdkafka_composer_pinba_pdo
       container_name: 'laravel.php'
-      build: ./laravel/php
+#l      build: ./laravel/php
       extra_hosts:
        - "localhost:172.17.0.1"
       links:
@@ -25,14 +35,14 @@ services:
        - elasticsearch
 #      ports:
 #       - "9001:9000"
-#      volumes:
+      volumes:
 #       - /var/www/walker:/var/www/walker
-#       - /var/www/telegram.bot:/var/www/telegram.bot
+       - /var/www/telegram.bot:/var/www/html
       working_dir: /var/www/telegram.bot
       networks:
       - main
   mysql:
-      #image: malgrat/mysql_percona:task
+#     image: malgrat/mysql_percona:task
       build: ./mysql
       container_name: 'mysql'
       environment:
@@ -99,18 +109,18 @@ services:
       - main
   
   front:
-      build: ./front/nginx
-#      build:
-#        context: .
-#        dockerfile: DockerfileFront
+#l      build: ./front/nginx
+      build:
+        context: ./front/nginx
+        dockerfile: DFlocal
       container_name: 'front'
       ports:
        - "3009:3009"
        - "${FRONT_PORT}"
       links:
        - mongo
-#      volumes :
-#       - /var/www/front/bot.manager:/app
+      volumes :
+       - /var/www/front/bot.manager:/app
       networks:
       - main
 

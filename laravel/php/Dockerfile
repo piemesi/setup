@@ -14,10 +14,10 @@ RUN docker-php-ext-install pdo pdo_mysql
 
 WORKDIR /var/www/html
 
-COPY ./src /var/www/html
+##COPY ./src /var/www/html
 
-RUN composer install --optimize-autoloader --no-scripts
-RUN chown www-data:www-data ./ -R
+##RUN composer install --optimize-autoloader --no-scripts
+##RUN chown www-data:www-data ./ -R
 
 #ONBUILD RUN php ./bin/console cache:clear --env=prod --no-debug --no-warmup
 #ONBUILD RUN php ./bin/console cache:warmup --env=prod
