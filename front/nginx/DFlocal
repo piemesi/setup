@@ -1,0 +1,30 @@
+
+FROM malgrat/node6 AS storefront
+#COPY ./src /app
+WORKDIR /app/client
+#RUN rm -rf build
+#RUN rm -rf node_modules
+RUN chmod 777 -R /app
+RUN npm i webpack-dev-server webpack@^2 -g  
+RUN chmod 777 -R /app
+#RUN npm rebuild node-sass --force
+#RUN npm install
+RUN npm rebuild node-sass --force
+RUN chmod 777 -R  /app
+CMD ["npm", "start"]
+#RUN webpack -p
+
+
+#FROM nginx
+
+#COPY ./conf.d/front.botme.conf /etc/nginx/conf.d/default.conf
+
+#COPY --from=storefront /app/client/build /var/www/html
+
+
+
+
+
+
+
+
