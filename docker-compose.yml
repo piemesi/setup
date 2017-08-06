@@ -70,10 +70,10 @@ services:
   redis:
       container_name: 'redis'
       image: redis
-      #volumes:
-      #  - "${REDIS_DATA}:/data"
-      #ports:
-      #  - "${REDIS_PORT}"
+      volumes:
+        - "${REDIS_DATA}:/data"
+      ports:
+        - "${REDIS_PORT}" 
       #ports:
       # - "6379:6379"
       networks:
