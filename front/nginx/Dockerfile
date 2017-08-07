@@ -14,6 +14,7 @@ FROM nginx
 
 COPY ./conf.d/front.botme.conf /etc/nginx/conf.d/default.conf
 
+#COPY --from=storefront /app/client /var/www
 COPY --from=storefront /app/client/build /var/www/html
 
 
